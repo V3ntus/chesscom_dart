@@ -39,6 +39,9 @@ abstract class IHttpEndpoint {
   /// A daily puzzle endpoint.
   void puzzle();
 
+  /// Player stats.
+  void stats();
+
   /// Club members.
   void members();
 
@@ -91,6 +94,9 @@ class HttpEndpoint implements IHttpEndpoint {
 
   @override
   void puzzle() => add(HttpEndpointPart("puzzle"));
+
+  @override
+  void stats() => add(HttpEndpointPart("stats"));
 
   @override
   void board(String id) => add(HttpEndpointPart(id));
