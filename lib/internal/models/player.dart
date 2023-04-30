@@ -1,5 +1,6 @@
 import 'package:chesscom_dart/internal/api.dart';
 import 'package:chesscom_dart/internal/enum.dart';
+import 'package:chesscom_dart/internal/models/player_stats.dart';
 
 class AccountStatus extends IEnum<String> {
   static const AccountStatus closed = AccountStatus._create("closed");
@@ -101,6 +102,8 @@ abstract class IPlayer {
 
   /// The player's current league.
   League get league;
+
+  Future<PlayerStats> get stats;
 }
 
 class Player implements IPlayer {
@@ -160,6 +163,11 @@ class Player implements IPlayer {
 
   @override
   late final bool verified;
+
+  @override
+  Future<PlayerStats> get stats async {
+    return await client.fetchProfileStats(username);
+  }
   
   Player(this.raw, this.client) {
     avatar = raw["avatar"];
