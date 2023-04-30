@@ -15,19 +15,47 @@ class HttpEndpointPart {
 }
 
 abstract class IHttpEndpoint {
+  /// Create an empty [IHttpEndpoint].
   factory IHttpEndpoint() = HttpEndpoint;
 
+  /// Adds a [HttpRoutePart] to this [IHttpEndpoint].
   void add(HttpEndpointPart httpEndpointPart);
 
+  /// A player base endpoint. Requires a username.
   void player(String username);
 
+  /// A club base endpoint. Requires the club name.
   void club(String clubName);
 
+  /// A tournament base endpoint. Requires the full tournament name.
   void tournament(String tournamentName);
 
+  /// A team match base endpoint. Requires the match ID.
   void match(String matchId);
 
+  /// A country base endpoint. Requires the two letter country code.
   void country(String countryCode);
+
+  /// A daily puzzle endpoint.
+  void puzzle();
+
+  /// Club members.
+  void members();
+
+  /// Tournament round information.
+  void round(String id);
+
+  /// Tournament round group information.
+  void group(String id);
+
+  /// Team match board information.
+  void board(String id);
+
+  /// Country players.
+  void players();
+
+  /// Country clubs.
+  void clubs();
 }
 
 class HttpEndpoint implements IHttpEndpoint {
@@ -52,15 +80,33 @@ class HttpEndpoint implements IHttpEndpoint {
   void country(String countryCode) => add(HttpEndpointPart("country", [HttpEndpointParam(countryCode, isMajor: true)]));
 
   @override
-  void match(String matchId) =>
-      add(HttpEndpointPart("match", [HttpEndpointParam(matchId, isMajor: true)]));
+  void match(String matchId) => add(HttpEndpointPart("match", [HttpEndpointParam(matchId, isMajor: true)]));
 
   @override
-  void player(String username) =>
-      add(HttpEndpointPart("username", [HttpEndpointParam(username)]));
+  void player(String username) => add(HttpEndpointPart("username", [HttpEndpointParam(username, isMajor: true)]));
 
   @override
-  void tournament(String tournamentName) {
-    // TODO: implement tournament
-  }
+  void tournament(String tournamentName) =>
+      add(HttpEndpointPart("tournament", [HttpEndpointParam(tournamentName, isMajor: true)]));
+
+  @override
+  void puzzle() => add(HttpEndpointPart("puzzle"));
+
+  @override
+  void board(String id) => add(HttpEndpointPart(id));
+
+  @override
+  void clubs() => add(HttpEndpointPart("clubs"));
+
+  @override
+  void group(String id) => add(HttpEndpointPart(id));
+
+  @override
+  void members() => add(HttpEndpointPart("members"));
+
+  @override
+  void players() => add(HttpEndpointPart("players"));
+
+  @override
+  void round(String id) => add(HttpEndpointPart(id));
 }
