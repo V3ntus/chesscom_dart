@@ -11,6 +11,10 @@ class HttpRequest {
   final HttpEndpoint endpoint;
   
   HttpRequest(this.endpoint, {this.method = "GET", this.queryParams, Map<String, String>? headers}) {
-    uri = Uri.https(Constants.host, Constants.baseUri);
+    uri = Uri.https(Constants.host, Constants.baseUri + endpoint.path);
+    this.headers = headers ?? {};
+    this.headers.addAll({
+      "Accept-Encoding": "gzip",
+    });
   }
 }
