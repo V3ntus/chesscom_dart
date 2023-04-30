@@ -83,7 +83,7 @@ class HttpEndpoint implements IHttpEndpoint {
   void match(String matchId) => add(HttpEndpointPart("match", [HttpEndpointParam(matchId, isMajor: true)]));
 
   @override
-  void player(String username) => add(HttpEndpointPart("username", [HttpEndpointParam(username, isMajor: true)]));
+  void player(String username) => add(HttpEndpointPart("player", [HttpEndpointParam(username, isMajor: true)]));
 
   @override
   void tournament(String tournamentName) =>
