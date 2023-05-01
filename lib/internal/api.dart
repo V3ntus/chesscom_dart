@@ -2,11 +2,11 @@ import 'package:chesscom_dart/internal/http/http_endpoints.dart';
 import 'package:chesscom_dart/internal/http/http_handler.dart';
 import 'package:chesscom_dart/internal/http/http_request.dart';
 import 'package:chesscom_dart/internal/cache.dart';
-import 'package:chesscom_dart/internal/models/player.dart';
+import 'package:chesscom_dart/internal/models/player/player.dart';
 
 import 'package:logging/logging.dart';
 
-import 'models/player_stats.dart';
+import 'models/player/player_stats.dart';
 
 abstract class ChessFactory {
   /// Create an HTTP client instance that connects to the Chess.com API
