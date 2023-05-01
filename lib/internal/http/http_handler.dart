@@ -8,12 +8,13 @@ import 'package:logging/logging.dart';
 class HttpHandler {
   late final http.Client httpClient;
 
-  final Logger logger = Logger("http");
-
   final ChessAPI client;
+
+  late final Logger logger;
 
   HttpHandler(this.client) {
     httpClient = http.Client();
+    logger = client.logger;
   }
 
   Future<HttpResponse> execute(HttpRequest request) async {
