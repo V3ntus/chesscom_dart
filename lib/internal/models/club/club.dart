@@ -1,4 +1,18 @@
+import 'package:chesscom_dart/internal/api.dart';
+
+class PartialMember {
+  late final String username;
+  late final DateTime joined;
+
+  PartialMember(Map<String, dynamic> raw) {
+    username = raw["username"];
+    joined = DateTime.parse(raw["joined"] * 1000);
+  }
+}
+
 abstract class IClub {
+  ChessAPI get client;
+
   Map<String, dynamic> get raw;
 
   /// The name of the club.
@@ -36,9 +50,25 @@ abstract class IClub {
 
   /// The club's description.
   String get description;
+
+  /// Members active in the week.
+  Future<List<PartialMember?>> get weeklyMembers;
+
+  /// Members active in the month.
+  Future<List<PartialMember?>> get monthlyMembers;
+
+  /// All members of this club.
+  Future<List<PartialMember?>> get members;
 }
 
 class Club implements IClub {
+  List<PartialMember?> _members = [];
+  List<PartialMember?> _weeklyMembers = [];
+  List<PartialMember?> _monthlyMembers = [];
+
+  @override
+  final ChessAPI client;
+
   @override
   Map<String, dynamic> raw;
 
@@ -78,7 +108,35 @@ class Club implements IClub {
   @override
   late final String name;
 
-  Club(this.raw) {
+  @override
+  Future<List<PartialMember?>> get weeklyMembers async {
+    // horrific caching practices
+    // TODO: implement TTL for club members cache
+    if (_weeklyMembers.isEmpty) {
+      _weeklyMembers = await client.fetchClubMembers(name.replaceAll(" ", "-"),
+          weekly: true, allTime: false);
+    }
+    return _weeklyMembers;
+  }
+
+  @override
+  Future<List<PartialMember?>> get monthlyMembers async {
+    if (_monthlyMembers.isEmpty) {
+      _monthlyMembers = await client.fetchClubMembers(name.replaceAll(" ", "-"),
+          monthly: true, allTime: false);
+    }
+    return _monthlyMembers;
+  }
+
+  @override
+  Future<List<PartialMember?>> get members async {
+    if (_members.isEmpty) {
+      _members = await client.fetchClubMembers(name.replaceAll(" ", "-"));
+    }
+    return _members;
+  }
+
+  Club(this.raw, this.client) {
     name = raw["name"];
     clubID = raw["club_id"] as int;
     icon = raw["icon"];
@@ -87,10 +145,12 @@ class Club implements IClub {
     averageDailyRating = raw["average_daily_rating"];
     membersCount = raw["members_count"];
     created = DateTime.fromMillisecondsSinceEpoch(raw["created"] * 1000);
-    lastActivity = DateTime.fromMillisecondsSinceEpoch(raw["last_activity"] * 1000);
+    lastActivity =
+        DateTime.fromMillisecondsSinceEpoch(raw["last_activity"] * 1000);
     isPublic = raw["visibility"] == "public";
     joinRequestUrl = raw["join_request"];
-    admin = (raw["admin"] as List<String>).map((e) => e.split("/").last).toList();
+    admin =
+        (raw["admin"] as List<String>).map((e) => e.split("/").last).toList();
     description = raw["description"];
   }
 }
