@@ -10,7 +10,6 @@ import 'package:chesscom_dart/internal/models/puzzle/puzzle.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:logging/logging.dart';
 
-
 abstract class ChessFactory {
   /// Create an HTTP client instance that connects to the Chess.com API
   static ChessAPI createClient({Level logLevel = Level.INFO}) =>
@@ -19,14 +18,15 @@ abstract class ChessFactory {
 
 class ChessAPI {
   late final HttpHandler httpHandler;
-  final Level logLevel;
+  final logger = Logger("chess");
 
   Cache<Player> players = Cache();
   Cache<PlayerStats> playerStats = Cache();
 
-  ChessAPI({this.logLevel = Level.INFO}) {
-    Logger.root.level = logLevel;
-    Logger.root.onRecord.listen((record) {
+  ChessAPI({logLevel = Level.INFO}) {
+    hierarchicalLoggingEnabled = true;
+    logger.level = logLevel;
+    logger.onRecord.listen((record) {
       print('[${record.level.name}] ${record.time} - ${record.message}');
     });
 
@@ -38,6 +38,7 @@ class ChessAPI {
     return expiresFormat.parse(headers["expires"] ?? "");
   }
 
+  /// Fetch a profile by a username.
   Future<Player> fetchProfile(String username) async {
     final res = await httpHandler
         .execute(HttpRequest(HttpEndpoint()..player(username)));
@@ -46,6 +47,7 @@ class ChessAPI {
     return profile;
   }
 
+  /// Fetch a profile's stats by a username.
   Future<PlayerStats> fetchProfileStats(String username) async {
     final res = await httpHandler.execute(HttpRequest(HttpEndpoint()
       ..player(username)
@@ -55,23 +57,40 @@ class ChessAPI {
     return profileStats;
   }
 
+  /// Fetch a club by its club name.
   Future<Club?> fetchClub(String clubName) async {
-    final res = await httpHandler.execute(HttpRequest(HttpEndpoint()..club(clubName)));
+    final res =
+        await httpHandler.execute(HttpRequest(HttpEndpoint()..club(clubName)));
     final club = Club(res.json!, this);
     return club;
   }
 
-  Future<List<PartialMember?>> fetchClubMembers(String clubName, {bool weekly = false, bool monthly = false, bool allTime = true}) async {
+  /// Fetch a club's members by its club name. Specify [weekly], [monthly],
+  /// and or [allTime] to control the members that get returned.
+  Future<List<PartialMember?>> fetchClubMembers(String clubName,
+      {bool weekly = false, bool monthly = false, bool allTime = true}) async {
     List<PartialMember> clubMembers = [];
-    final res = await httpHandler.execute(HttpRequest(HttpEndpoint()..club(clubName)));
-    if (allTime) clubMembers.addAll((res.json!["all_time"] as List).map((e) => PartialMember(e)));
-    if (weekly) clubMembers.addAll((res.json!["weekly"] as List).map((e) => PartialMember(e)));
-    if (monthly) clubMembers.addAll((res.json!["monthly"] as List).map((e) => PartialMember(e)));
+    final res =
+        await httpHandler.execute(HttpRequest(HttpEndpoint()..club(clubName)));
+    if (allTime) {
+      clubMembers
+          .addAll((res.json!["all_time"] as List).map((e) => PartialMember(e)));
+    }
+    if (weekly) {
+      clubMembers
+          .addAll((res.json!["weekly"] as List).map((e) => PartialMember(e)));
+    }
+    if (monthly) {
+      clubMembers
+          .addAll((res.json!["monthly"] as List).map((e) => PartialMember(e)));
+    }
     return clubMembers;
   }
 
+  /// Fetch a daily or random daily puzzle.
   Future<Puzzle> fetchPuzzle({bool random = false}) async {
-    final res = await httpHandler.execute(HttpRequest(HttpEndpoint()..puzzle(random: random)));
+    final res = await httpHandler
+        .execute(HttpRequest(HttpEndpoint()..puzzle(random: random)));
     return Puzzle(res.json!, this);
   }
 }
