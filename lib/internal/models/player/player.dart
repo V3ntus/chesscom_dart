@@ -1,6 +1,6 @@
 import 'package:chesscom_dart/internal/api.dart';
 import 'package:chesscom_dart/internal/enum.dart';
-import 'package:chesscom_dart/internal/models/player_stats.dart';
+import 'package:chesscom_dart/internal/models/player/player_stats.dart';
 
 class AccountStatus extends IEnum<String> {
   static const AccountStatus closed = AccountStatus._create("closed");

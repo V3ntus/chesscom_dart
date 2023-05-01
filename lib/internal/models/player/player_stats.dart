@@ -47,9 +47,16 @@ class PlayerStatsSectionName extends IEnum<String> {
 class LastGame implements IStatEntry {
   @override
   final RawApiMap raw;
+
+  /// Most recent rating.
   late final int rating;
+
+  /// Timestamp of last rated game.
   late final DateTime date;
+
+  /// The Glicko RD value used to calculated ratings changes.
   late final int rd;
+
   LastGame(this.raw) {
     rating = raw["rating"] as int;
     date = DateTime.fromMillisecondsSinceEpoch((raw["date"] as int) * 1000);
@@ -60,9 +67,16 @@ class LastGame implements IStatEntry {
 class BestGame implements IStatEntry {
   @override
   final RawApiMap raw;
+
+  /// Highest rating achieved.
   late final int rating;
+
+  /// Timestamp of best-win game.
   late final DateTime date;
+
+  /// The URL of the best-win game.
   late final String game;
+
   BestGame(this.raw) {
     rating = raw["rating"] as int;
     date = DateTime.fromMillisecondsSinceEpoch((raw["date"] as int) * 1000);
@@ -73,11 +87,22 @@ class BestGame implements IStatEntry {
 class RecordGame implements IStatEntry {
   @override
   final RawApiMap raw;
+
+  /// Number of games won.
   late final int win;
+
+  /// Number of games lost.
   late final int loss;
+
+  /// Number of games drawn.
   late final int draw;
+
+  /// Number of seconds per average move.
   late final int? timePerMove;
+
+  /// Timeout percentage in the last 90 days.
   late final int? timeoutPercent;
+
   RecordGame(this.raw) {
     win = raw["win"] as int;
     loss = raw["loss"] as int;
@@ -90,10 +115,19 @@ class RecordGame implements IStatEntry {
 class TournamentGame implements IStatEntry {
   @override
   final RawApiMap raw;
+
+  /// Total number of points earned in tournaments.
   late final int points;
+
+  /// Number of tournaments withdrawn from.
   late final int withdraw;
+
+  /// Number of tournaments joined.
   late final int count;
+
+  /// Best tournament place.
   late final int highestFinish;
+
   TournamentGame(this.raw) {
     points = raw["points"] as int;
     withdraw = raw["withdraw"] as int;
