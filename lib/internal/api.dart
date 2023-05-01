@@ -3,10 +3,11 @@ import 'package:chesscom_dart/internal/http/http_handler.dart';
 import 'package:chesscom_dart/internal/http/http_request.dart';
 import 'package:chesscom_dart/internal/cache.dart';
 import 'package:chesscom_dart/internal/models/player/player.dart';
+import 'package:chesscom_dart/internal/models/player/player_stats.dart';
 
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:logging/logging.dart';
 
-import 'models/player/player_stats.dart';
 
 abstract class ChessFactory {
   /// Create an HTTP client instance that connects to the Chess.com API
@@ -31,7 +32,8 @@ class ChessAPI {
   }
 
   DateTime _getTtl(Map<String, String> headers) {
-    return DateTime.parse(headers["expires"] ?? "");
+    DateFormat expiresFormat = DateFormat("EEE, dd MMM yyyy HH:mm:ss");
+    return expiresFormat.parse(headers["expires"] ?? "");
   }
 
   Future<Player> fetchProfile(String username) async {
