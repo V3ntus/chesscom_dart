@@ -5,6 +5,7 @@ import 'package:chesscom_dart/internal/cache.dart';
 import 'package:chesscom_dart/internal/models/club/club.dart';
 import 'package:chesscom_dart/internal/models/player/player.dart';
 import 'package:chesscom_dart/internal/models/player/player_stats.dart';
+import 'package:chesscom_dart/internal/models/puzzle/puzzle.dart';
 
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:logging/logging.dart';
@@ -67,5 +68,10 @@ class ChessAPI {
     if (weekly) clubMembers.addAll((res.json!["weekly"] as List).map((e) => PartialMember(e)));
     if (monthly) clubMembers.addAll((res.json!["monthly"] as List).map((e) => PartialMember(e)));
     return clubMembers;
+  }
+
+  Future<Puzzle> fetchPuzzle({bool random = false}) async {
+    final res = await httpHandler.execute(HttpRequest(HttpEndpoint()..puzzle(random: random)));
+    return Puzzle(res.json!, this);
   }
 }
