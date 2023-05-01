@@ -1,5 +1,3 @@
-import 'package:chesscom_dart/internal/models/player/player.dart';
-
 abstract class IClub {
   Map<String, dynamic> get raw;
 
