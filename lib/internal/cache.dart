@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:chesscom_dart/internal/api.dart';
-import 'package:chesscom_dart/internal/models/player.dart';
+import 'package:chesscom_dart/internal/models/player/player.dart';
 
 abstract class Cacheable<T extends CacheKey, S extends Object> {
   final ChessAPI client;
